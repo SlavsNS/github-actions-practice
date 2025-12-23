@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: mydatabase
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    image: ${{ DOCKER_USERNAME }}/nodeapp:latest
+    ports:
+      - "80:3000"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:password123@db:5432/mydatabase
+
+volumes:
+  pgdata:
